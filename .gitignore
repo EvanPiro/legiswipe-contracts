@@ -113,3 +113,5 @@ offchain-secrets.json
 
 # Chainlink Functions request artifacts
 .chainlink_functions
+
+.idea
