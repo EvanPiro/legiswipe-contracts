@@ -40,7 +40,7 @@ npx hardhat functions-sub-create --network ethereumSepolia --amount 3 --contract
 6. Ensure LINK amount to be sent is above the balance of sender
 7. Send the LINK amount to the `FunctionsBillingRegistryProxy` along with the sub id.
 8. Add `FunctionConsumer` deployed in previous in command to `FunctionsBillingRegistry`.
-9. After transaction is confirmed, print out the info on the subscription stored by the `FunctionBillingRegistry`. This includes
+9. After transaction is confirmed, print out the info on the subscription stored by the `FunctionBillingRegistry`. This includes the address of the instance of `FunctionsConsumer` that was deployed earlier.
 
 An Example output would be
 ```shell
@@ -125,6 +125,7 @@ const requestConfig = {
 }
 ```
 Observe that the `source` property points to a JS file [Functions-request-source-API-example.js](Functions-request-source-API-example.js). This file contains the code that the chainlink function will run offchain and pass the results to the `FunctionConsumer` contract. 
+
 7. Call `estimateGas` on `FunctionConsumer`. This is similar to `estimateCost` but will return the gas.
 You'll see a charge estimation prompt upon running this script:
 ```shell
