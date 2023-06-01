@@ -21,11 +21,13 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
     bool redeemed;
   }
 
-  string public source = "var a=args[0],c=args[1],d={url:`https://legiswipe.com/.netlify/functions/redeam?address=${a}&timestamp=${c}`},e=await Functions.makeHttpRequest(d),f=Math.round(e.data['quantity']);return Functions.encodeUint256(f);";
+  string public source = "var a=args[0],c=args[1],d={url:`https://legiswipe.com/.netlify/functions/redeam?address=${a}&from=${c}`},e=await Functions.makeHttpRequest(d),f=Math.round(e.data['quantity']);return Functions.encodeUint256(f);";
   uint64 subId;
   bytes32 public latestRequestId;
   bytes public latestResponse;
   bytes public latestError;
+
+  mapping (address => uint256) public lastRedeemed;
 
   mapping (bytes32 => RedeemRequest) public redeemRequests;
 
@@ -63,18 +65,18 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
 
     Functions.Request memory req;
     req.initializeRequest(Functions.Location.Inline, Functions.CodeLanguage.JavaScript, source);
-    uint256 timestamp = block.timestamp;
+
     string[] memory args = new string[](2);
     string memory receiverString = Strings.toHexString(receiver);
-    string memory timestampString = Strings.toString(timestamp);
-
+    string memory lastRedeemedString = Strings.toString(lastRedeemed[receiver]);
 
     args[0] = receiverString;
-    args[1] = timestampString;
+    args[1] = lastRedeemedString;
 
     req.addArgs(args);
-
     bytes32 assignedReqID = sendRequest(req, subId, gasLimit);
+
+    uint256 timestamp = block.timestamp;
     redeemRequests[assignedReqID] = RedeemRequest(receiver, timestamp, false);
     latestRequestId = assignedReqID;
     return assignedReqID;
@@ -91,9 +93,12 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
   function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) internal override {
     latestResponse = response;
     latestError = err;
+    uint256 redeemTime = block.timestamp;
+
     address receiver = redeemRequests[requestId].receiver;
-    uint256 timestamp = redeemRequests[requestId].timestamp;
-    redeemRequests[requestId] = RedeemRequest(receiver, timestamp, true);
+    redeemRequests[requestId] = RedeemRequest(receiver, redeemTime, true);
+
+    lastRedeemed[receiver] = redeemTime;
 
     uint256 amount = uint256(bytes32(response));
 
