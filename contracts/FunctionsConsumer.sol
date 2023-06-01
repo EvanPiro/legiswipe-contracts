@@ -15,12 +15,19 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
   using Functions for Functions.Request;
 
-  string public source = "var a=args[0],c={url:`https://legiswipe.com/.netlify/functions/redeam?address=${a}`},d=await Functions.makeHttpRequest(c),e=Math.round(d.data['quantity']);return Functions.encodeUint256(e);";
+  struct RedeemRequest {
+    address receiver;
+    uint256 timestamp;
+    bool redeemed;
+  }
+
+  string public source = "var a=args[0],c=args[1],d={url:`https://legiswipe.com/.netlify/functions/redeam?address=${a}&timestamp=${c}`},e=await Functions.makeHttpRequest(d),f=Math.round(e.data['quantity']);return Functions.encodeUint256(f);";
   uint64 subId;
   bytes32 public latestRequestId;
   bytes public latestResponse;
   bytes public latestError;
-  mapping (bytes32 => address) public redeemRequest;
+
+  mapping (bytes32 => RedeemRequest) public redeemRequests;
 
   event OCRResponse(bytes32 indexed requestId, bytes result, bytes err);
 
@@ -56,13 +63,19 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
 
     Functions.Request memory req;
     req.initializeRequest(Functions.Location.Inline, Functions.CodeLanguage.JavaScript, source);
+    uint256 timestamp = block.timestamp;
     string[] memory args = new string[](2);
     string memory receiverString = Strings.toHexString(receiver);
+    string memory timestampString = Strings.toString(timestamp);
+
+
     args[0] = receiverString;
+    args[1] = timestampString;
+
     req.addArgs(args);
 
     bytes32 assignedReqID = sendRequest(req, subId, gasLimit);
-    redeemRequest[assignedReqID] = receiver;
+    redeemRequests[assignedReqID] = RedeemRequest(receiver, timestamp, false);
     latestRequestId = assignedReqID;
     return assignedReqID;
   }
@@ -78,7 +91,10 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
   function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) internal override {
     latestResponse = response;
     latestError = err;
-    address receiver = redeemRequest[requestId];
+    address receiver = redeemRequests[requestId].receiver;
+    uint256 timestamp = redeemRequests[requestId].timestamp;
+    redeemRequests[requestId] = RedeemRequest(receiver, timestamp, true);
+
     uint256 amount = uint256(bytes32(response));
 
     super._mint(receiver, amount);

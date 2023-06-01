@@ -15,7 +15,8 @@
     "lint:contracts": "solhint 'contracts/*.sol'",
     "lint:contracts:fix": "solhint 'contracts/**/*.sol' --fix",
     "format:check": "prettier --check .",
-    "format:fix": "prettier --write ."
+    "format:fix": "prettier --write .",
+    "mini": "npx minify Functions-request-source-API-example.js"
   },
   "devDependencies": {
     "@chainlink/contracts": "0.5.1",

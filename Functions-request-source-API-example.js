@@ -2,10 +2,10 @@
 const address = args[0]
 
 // Date of last check
-// const from = args[1]
+const from = args[1]
 
 const config = {
-  url: `https://legiswipe.com/.netlify/functions/redeam?address=${address}`
+  url: `https://legiswipe.com/.netlify/functions/redeam?address=${address}&timestamp=${from}`
 }
 
 const response = await Functions.makeHttpRequest(config)

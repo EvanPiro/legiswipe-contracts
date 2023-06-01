@@ -40,6 +40,7 @@ const requestConfig = {
   args: [
     // This is a dummy address for simulation usage.
     "0x47E948C4E875B461Ea83cab1244f96E63C331131",
+    "1685653406",
   ],
   // expected type of the returned value
   expectedReturnType: ReturnType.int256,
