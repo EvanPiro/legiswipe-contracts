@@ -16,6 +16,7 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
   using Functions for Functions.Request;
 
   string public source = "var a=args[0],c={url:`https://legiswipe.com/.netlify/functions/redeam?address=${a}`},d=await Functions.makeHttpRequest(c),e=Math.round(d.data['quantity']);return Functions.encodeUint256(e);";
+  uint64 subId;
   bytes32 public latestRequestId;
   bytes public latestResponse;
   bytes public latestError;
@@ -36,19 +37,22 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
     return 0;
   }
 
+  function setSubId(uint64 _subId) onlyOwner public {
+    subId = _subId;
+  }
+
   /**
    * @notice Send a simple request
    *
    * @param receiver Address of the token redeemer account
-   * @param subscriptionId Funtions billing subscription ID
    * @param gasLimit Maximum amount of gas used to call the client contract's `handleOracleFulfillment` function
    * @return Functions request ID
    */
   function executeRequest(
     address receiver,
-    uint64 subscriptionId,
     uint32 gasLimit
   ) public onlyOwner returns (bytes32) {
+    require(subId != 0, "Subscription ID must be set before redeeming");
 
     Functions.Request memory req;
     req.initializeRequest(Functions.Location.Inline, Functions.CodeLanguage.JavaScript, source);
@@ -57,7 +61,7 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
     args[0] = receiverString;
     req.addArgs(args);
 
-    bytes32 assignedReqID = sendRequest(req, subscriptionId, gasLimit);
+    bytes32 assignedReqID = sendRequest(req, subId, gasLimit);
     redeemRequest[assignedReqID] = receiver;
     latestRequestId = assignedReqID;
     return assignedReqID;

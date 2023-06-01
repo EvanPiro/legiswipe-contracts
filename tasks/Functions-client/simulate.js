@@ -66,9 +66,12 @@ task("functions-simulate", "Simulates an end-to-end fulfillment locally for the 
     await new Promise(async (resolve) => {
       // Initiate the request from the client contract
       const clientContract = await clientFactory.attach(client.address)
+
+      const subIdTx = await clientContract.setSubId(subscriptionId);
+      await subIdTx.wait(1);
+
       const requestTx = await clientContract.executeRequest(
         "0x1A22f8e327adD0320d7ea341dFE892e43bC60322",
-        subscriptionId,
         gasLimit
       )
       const requestTxReceipt = await requestTx.wait(1)

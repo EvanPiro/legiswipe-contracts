@@ -103,9 +103,11 @@ task("functions-request", "Initiates a request from a Functions client contract"
       )
     }
 
+    const subIdTx = await clientContract.setSubId(subscriptionId);
+    await subIdTx.wait(1);
+
     const transactionEstimateGas = await clientContract.estimateGas.executeRequest(
       "0x1A22f8e327adD0320d7ea341dFE892e43bC60322",
-      subscriptionId,
       gasLimit,
       overrides
     )
@@ -237,10 +239,12 @@ task("functions-request", "Initiates a request from a Functions client contract"
         }
       )
 
+      const subIdTx = await clientContract.setSubId(subscriptionId);
+      await subIdTx.wait(1);
+
       // Initiate the on-chain request after all listeners are initialized
       const requestTx = await clientContract.executeRequest(
         "0x1A22f8e327adD0320d7ea341dFE892e43bC60322",
-        subscriptionId,
         gasLimit,
         overrides
       )
