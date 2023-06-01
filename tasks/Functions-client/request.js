@@ -21,7 +21,7 @@ task("functions-request", "Initiates a request from a Functions client contract"
     200000,
     types.int
   )
-  .addOptionalParam("requestgas", "Gas limit for calling the executeRequest function", 1_500_000, types.int)
+  .addOptionalParam("requestgas", "Gas limit for calling the executeRequest function", 3_500_000, types.int)
   .setAction(async (taskArgs, hre) => {
     // A manual gas limit is required as the gas limit estimated by Ethers is not always accurate
     const overrides = {

@@ -4,6 +4,7 @@ pragma solidity ^0.8.7;
 import {Functions, FunctionsClient} from "./dev/functions/FunctionsClient.sol";
 import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 /**
  * @title Functions Consumer contract
@@ -16,6 +17,7 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
   bytes32 public latestRequestId;
   bytes public latestResponse;
   bytes public latestError;
+  mapping (bytes32 => address) public redeemRequest;
 
   event OCRResponse(bytes32 indexed requestId, bytes result, bytes err);
 
@@ -54,9 +56,14 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
     if (secrets.length > 0) {
       req.addRemoteSecrets(secrets);
     }
-    if (args.length > 0) req.addArgs(args);
+    string[] memory fnArgs = new string[](2);
+    string memory addressString = Strings.toHexString(msg.sender);
+    fnArgs[0] = addressString;
+
+    req.addArgs(fnArgs);
 
     bytes32 assignedReqID = sendRequest(req, subscriptionId, gasLimit);
+    redeemRequest[assignedReqID] = msg.sender;
     latestRequestId = assignedReqID;
     return assignedReqID;
   }
@@ -72,8 +79,10 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
   function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) internal override {
     latestResponse = response;
     latestError = err;
+    address receiver = redeemRequest[requestId];
+    uint256 amount = uint256(bytes32(response));
 
-    super._mint(0x1A22f8e327adD0320d7ea341dFE892e43bC60322, uint256(bytes32(response)));
+    super._mint(receiver, amount);
     emit OCRResponse(requestId, response, err);
   }
 
