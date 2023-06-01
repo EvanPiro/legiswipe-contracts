@@ -44,8 +44,8 @@ const requestConfig = {
   walletPrivateKey: process.env["PRIVATE_KEY"],
   // args (string only array) can be accessed within the source code with `args[index]` (ie: args[0]).
   args: [
-    "gbp",
-    "usd"
+    // This is a dummy address for simulation usage.
+    "0x47E948C4E875B461Ea83cab1244f96E63C331131",
   ],
   // expected type of the returned value
   expectedReturnType: ReturnType.int256,

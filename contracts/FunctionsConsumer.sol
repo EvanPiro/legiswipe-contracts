@@ -5,6 +5,7 @@ import {Functions, FunctionsClient} from "./dev/functions/FunctionsClient.sol";
 import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+//import {console} from "hardhat/console.sol";
 
 /**
  * @title Functions Consumer contract
@@ -39,7 +40,7 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
    *
    * @param source JavaScript source code
    * @param secrets Encrypted secrets payload
-   * @param args List of arguments accessible from within the source code
+   * @param receiver Address of the token redeemer account
    * @param subscriptionId Funtions billing subscription ID
    * @param gasLimit Maximum amount of gas used to call the client contract's `handleOracleFulfillment` function
    * @return Functions request ID
@@ -47,7 +48,7 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
   function executeRequest(
     string calldata source,
     bytes calldata secrets,
-    string[] calldata args,
+    address receiver,
     uint64 subscriptionId,
     uint32 gasLimit
   ) public onlyOwner returns (bytes32) {
@@ -56,14 +57,13 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
     if (secrets.length > 0) {
       req.addRemoteSecrets(secrets);
     }
-    string[] memory fnArgs = new string[](2);
-    string memory addressString = Strings.toHexString(msg.sender);
-    fnArgs[0] = addressString;
-
-    req.addArgs(fnArgs);
+    string[] memory args = new string[](2);
+    string memory receiverString = Strings.toHexString(receiver);
+    args[0] = receiverString;
+    req.addArgs(args);
 
     bytes32 assignedReqID = sendRequest(req, subscriptionId, gasLimit);
-    redeemRequest[assignedReqID] = msg.sender;
+    redeemRequest[assignedReqID] = receiver;
     latestRequestId = assignedReqID;
     return assignedReqID;
   }

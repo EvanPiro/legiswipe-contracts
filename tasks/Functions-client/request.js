@@ -106,7 +106,7 @@ task("functions-request", "Initiates a request from a Functions client contract"
     const transactionEstimateGas = await clientContract.estimateGas.executeRequest(
       requestConfig.source,
       requestConfig.secrets && Object.keys(requestConfig.secrets).length > 0 ? simulatedSecretsURLBytes : [],
-      requestConfig.args ?? [],
+      "0x1A22f8e327adD0320d7ea341dFE892e43bC60322",
       subscriptionId,
       gasLimit,
       overrides
@@ -243,7 +243,7 @@ task("functions-request", "Initiates a request from a Functions client contract"
       const requestTx = await clientContract.executeRequest(
         request.source,
         request.secrets ?? [],
-        request.args ?? [],
+        "0x1A22f8e327adD0320d7ea341dFE892e43bC60322",
         subscriptionId,
         gasLimit,
         overrides
