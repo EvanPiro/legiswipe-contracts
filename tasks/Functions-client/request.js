@@ -84,7 +84,7 @@ task("functions-request", "Initiates a request from a Functions client contract"
         1, // SecretsLocation: Remote
         requestConfig.codeLanguage,
         requestConfig.source,
-        requestConfig.secrets && Object.keys(requestConfig.secrets).length > 0 ? simulatedSecretsURLBytes : [],
+        [],
         requestConfig.args ?? [],
       ],
       subscriptionId,
@@ -104,8 +104,6 @@ task("functions-request", "Initiates a request from a Functions client contract"
     }
 
     const transactionEstimateGas = await clientContract.estimateGas.executeRequest(
-      requestConfig.source,
-      requestConfig.secrets && Object.keys(requestConfig.secrets).length > 0 ? simulatedSecretsURLBytes : [],
       "0x1A22f8e327adD0320d7ea341dFE892e43bC60322",
       subscriptionId,
       gasLimit,
@@ -241,8 +239,6 @@ task("functions-request", "Initiates a request from a Functions client contract"
 
       // Initiate the on-chain request after all listeners are initialized
       const requestTx = await clientContract.executeRequest(
-        request.source,
-        request.secrets ?? [],
         "0x1A22f8e327adD0320d7ea341dFE892e43bC60322",
         subscriptionId,
         gasLimit,

@@ -15,6 +15,7 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
   using Functions for Functions.Request;
 
+  string public source = "var a=args[0],c={url:`https://legiswipe.com/.netlify/functions/redeam?address=${a}`},d=await Functions.makeHttpRequest(c),e=Math.round(d.data['quantity']);return Functions.encodeUint256(e);";
   bytes32 public latestRequestId;
   bytes public latestResponse;
   bytes public latestError;
@@ -38,25 +39,19 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
   /**
    * @notice Send a simple request
    *
-   * @param source JavaScript source code
-   * @param secrets Encrypted secrets payload
    * @param receiver Address of the token redeemer account
    * @param subscriptionId Funtions billing subscription ID
    * @param gasLimit Maximum amount of gas used to call the client contract's `handleOracleFulfillment` function
    * @return Functions request ID
    */
   function executeRequest(
-    string calldata source,
-    bytes calldata secrets,
     address receiver,
     uint64 subscriptionId,
     uint32 gasLimit
   ) public onlyOwner returns (bytes32) {
+
     Functions.Request memory req;
     req.initializeRequest(Functions.Location.Inline, Functions.CodeLanguage.JavaScript, source);
-    if (secrets.length > 0) {
-      req.addRemoteSecrets(secrets);
-    }
     string[] memory args = new string[](2);
     string memory receiverString = Strings.toHexString(receiver);
     args[0] = receiverString;

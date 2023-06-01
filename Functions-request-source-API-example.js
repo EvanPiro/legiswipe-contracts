@@ -10,6 +10,6 @@ const config = {
 
 const response = await Functions.makeHttpRequest(config)
 
-const price = Math.round(response.data["quantity"])
+const price = Math.round(response.data['quantity'])
 
 return Functions.encodeUint256(price)

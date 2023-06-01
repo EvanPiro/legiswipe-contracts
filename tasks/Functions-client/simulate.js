@@ -67,8 +67,6 @@ task("functions-simulate", "Simulates an end-to-end fulfillment locally for the 
       // Initiate the request from the client contract
       const clientContract = await clientFactory.attach(client.address)
       const requestTx = await clientContract.executeRequest(
-        request.source,
-        request.secrets ?? [],
         "0x1A22f8e327adD0320d7ea341dFE892e43bC60322",
         subscriptionId,
         gasLimit
