@@ -1,11 +1,11 @@
 // Address to check for tokens
-const base = args[0]
+const address = args[0]
 
 // Date of last check
-const quote = args[1]
+const from = args[1]
 
 const config = {
-  url: 'https://legiswipe.com/.netlify/functions/redeam'
+  url: `https://legiswipe.com/.netlify/functions/redeam?address=${address}&from=${from}`
 }
 
 const response = await Functions.makeHttpRequest(config)

@@ -2,15 +2,15 @@
 pragma solidity ^0.8.7;
 
 import {Functions, FunctionsClient} from "./dev/functions/FunctionsClient.sol";
-// import "@chainlink/contracts/src/v0.8/dev/functions/FunctionsClient.sol"; // Once published
 import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 /**
  * @title Functions Consumer contract
  * @notice This contract is a demonstration of using Functions.
  * @notice NOT FOR PRODUCTION USE
  */
-contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
+contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
   using Functions for Functions.Request;
 
   bytes32 public latestRequestId;
@@ -26,7 +26,11 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
    */
   // https://github.com/protofire/solhint/issues/242
   // solhint-disable-next-line no-empty-blocks
-  constructor(address oracle) FunctionsClient(oracle) ConfirmedOwner(msg.sender) {}
+  constructor(address oracle) FunctionsClient(oracle) ConfirmedOwner(msg.sender) ERC20("legiswipe", "LEGIS") {}
+
+  function decimals() public view virtual override returns (uint8) {
+    return 0;
+  }
 
   /**
    * @notice Send a simple request
@@ -68,6 +72,8 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
   function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) internal override {
     latestResponse = response;
     latestError = err;
+
+    super._mint(0x1A22f8e327adD0320d7ea341dFE892e43bC60322, uint256(bytes32(response)));
     emit OCRResponse(requestId, response, err);
   }
 
