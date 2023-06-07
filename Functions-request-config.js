@@ -39,7 +39,7 @@ const requestConfig = {
   // args (string only array) can be accessed within the source code with `args[index]` (ie: args[0]).
   args: [
     // This is a dummy address for simulation usage.
-    "0x47E948C4E875B461Ea83cab1244f96E63C331131",
+    "0x1a22f8e327add0320d7ea341dfe892e43bc60322",
     "1685653406",
   ],
   // expected type of the returned value

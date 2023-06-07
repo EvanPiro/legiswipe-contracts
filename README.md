@@ -15,7 +15,7 @@ npx env-enc set-pw
 
 #### Deploying Function Consumer
 
-Any Function Consumer contracts belong to the legiswipe protocol 
+Any Function Consumer contracts belong to the legiswipe protocol. 
 
 ```shell
 npx hardhat functions-deploy-client --network ethereumSepolia --verify true

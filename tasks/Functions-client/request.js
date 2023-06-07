@@ -107,7 +107,7 @@ task("functions-request", "Initiates a request from a Functions client contract"
     await subIdTx.wait(1);
 
     const transactionEstimateGas = await clientContract.estimateGas.executeRequest(
-      "0x1A22f8e327adD0320d7ea341dFE892e43bC60322",
+      "0x1a22f8e327add0320d7ea341dfe892e43bc60322",
       gasLimit,
       overrides
     )
@@ -244,7 +244,7 @@ task("functions-request", "Initiates a request from a Functions client contract"
 
       // Initiate the on-chain request after all listeners are initialized
       const requestTx = await clientContract.executeRequest(
-        "0x1A22f8e327adD0320d7ea341dFE892e43bC60322",
+        "0x1a22f8e327add0320d7ea341dfe892e43bc60322",
         gasLimit,
         overrides
       )

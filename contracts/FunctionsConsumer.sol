@@ -21,7 +21,7 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
     bool redeemed;
   }
 
-  string public source = "var a=args[0],c=args[1],d={url:`https://legiswipe.com/.netlify/functions/redeam?address=${a}&from=${c}`},e=await Functions.makeHttpRequest(d),f=Math.round(e.data['quantity']);return Functions.encodeUint256(f);";
+  string public source = "var a=args[0],c=args[1],d={url:`https://legiswipe.com/.netlify/functions/redeem?address=${a}&from=${c}`},e=await Functions.makeHttpRequest(d),f=Math.round(e.data['quantity']);return Functions.encodeUint256(f);";
   uint64 subId;
   bytes32 public latestRequestId;
   bytes public latestResponse;

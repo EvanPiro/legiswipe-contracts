@@ -71,7 +71,7 @@ task("functions-simulate", "Simulates an end-to-end fulfillment locally for the 
       await subIdTx.wait(1);
 
       const requestTx = await clientContract.executeRequest(
-        "0x1A22f8e327adD0320d7ea341dFE892e43bC60322",
+        "0x1a22f8e327add0320d7ea341dfe892e43bc60322",
         gasLimit
       )
       const requestTxReceipt = await requestTx.wait(1)
