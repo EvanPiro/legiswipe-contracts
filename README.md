@@ -2,7 +2,9 @@
 
 This repository contains the contracts and chainlink function code necessary to run the legiswipe.com token redemption system and data exchange.
 
-For the accompanying off-chain application, checkout https://github.com/EvanPiro/legiswipe-web.
+For the accompanying off-chain application, check out:
+
+https://github.com/EvanPiro/legiswipe-web.
 
 ## Token Redemption System
 
