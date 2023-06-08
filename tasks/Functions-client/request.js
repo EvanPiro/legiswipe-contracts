@@ -243,6 +243,8 @@ task("functions-request", "Initiates a request from a Functions client contract"
       await subIdTx.wait(1);
 
       // Initiate the on-chain request after all listeners are initialized
+      console.log('gas limit', gasLimit);
+      console.log('overrides', overrides)
       const requestTx = await clientContract.executeRequest(
         "0x1a22f8e327add0320d7ea341dfe892e43bc60322",
         gasLimit,

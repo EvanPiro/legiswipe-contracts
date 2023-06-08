@@ -60,7 +60,7 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner, ERC20 {
   function executeRequest(
     address receiver,
     uint32 gasLimit
-  ) public onlyOwner returns (bytes32) {
+  ) public returns (bytes32) {
     require(subId != 0, "Subscription ID must be set before redeeming");
 
     Functions.Request memory req;
