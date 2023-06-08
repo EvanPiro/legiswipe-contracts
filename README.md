@@ -2,6 +2,8 @@
 
 This repository contains the contracts and chainlink function code necessary to run the legiswipe.com token redemption system and data exchange.
 
+For the accompanying off-chain application, checkout https://github.com/EvanPiro/legiswipe-web.
+
 ## Token Redemption System
 
 When a voter votes on congressional bills via [legiswipe.com](https://legiswipe.com/), an off-chain record updates on AWS representing the quantity of bills voted on by voter filtered by a date range. The token redemption contract supports minting a quantity of ERC20 tokens based on the number of bills the voter has voted on since their last redemption. 
